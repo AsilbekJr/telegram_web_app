@@ -311,6 +311,18 @@ connectDB().then(() => {
             });
         });
 
+        bot.command('admin', (ctx) => {
+            const adminUrl = process.env.WEB_APP_URL ? `${process.env.WEB_APP_URL}/admin` : '';
+            if(!adminUrl) return;
+            ctx.reply('Admin paneliga kirish:', {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: "⚙️ Admin Panel", web_app: { url: adminUrl } }]
+                    ]
+                }
+            });
+        });
+
         if (BOT_TOKEN) {
             // Update the main menu button automatically so the user always has the latest valid URL without needing /start again
             bot.telegram.setChatMenuButton({
