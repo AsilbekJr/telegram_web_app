@@ -57,6 +57,20 @@ export default function ProductDetails() {
            </p>
         </div>
         
+        {product.features && product.features.length > 0 && (
+          <div className="mb-24">
+            <h3 className="text-lg font-bold text-tg-text mb-3">Asosiy xususiyatlari</h3>
+            <ul className="space-y-2">
+              {product.features.map((feature, i) => (
+                <li key={i} className="flex items-center text-sm font-medium text-tg-text">
+                   <div className="w-1.5 h-1.5 rounded-full bg-brand mr-3 flex-shrink-0"></div>
+                   {feature}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-tg-bg border-t border-tg-hint/10 z-20 max-w-screen-md mx-auto pb-8">
             <Button 
             size="lg"

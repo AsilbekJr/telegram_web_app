@@ -20,6 +20,10 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String, 
     required: true,
+  },
+  features: {
+    type: [String],
+    default: [],
   }
 }, { timestamps: true });
 

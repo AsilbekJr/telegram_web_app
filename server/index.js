@@ -182,6 +182,29 @@ app.get('/api/orders', adminAuth, async (req, res) => {
     }
 });
 
+// Admin API: Update order status
+app.put('/api/orders/:id/status', adminAuth, async (req, res) => {
+    try {
+        const { status } = req.body;
+        const updated = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
+        if (!updated) return res.status(404).json({ error: 'Order not found' });
+        res.json(updated);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update order status' });
+    }
+});
+
+// Admin API: Delete an order
+app.delete('/api/orders/:id', adminAuth, async (req, res) => {
+    try {
+        const deleted = await Order.findByIdAndDelete(req.params.id);
+        if (!deleted) return res.status(404).json({ error: 'Order not found' });
+        res.json({ success: true, message: 'Order deleted' });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete order' });
+    }
+});
+
 // Categories API
 app.get('/api/categories', async (req, res) => {
     try {

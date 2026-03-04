@@ -27,7 +27,7 @@ export default function Admin() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState({
-    title: '', description: '', price: '', image: '', category: ''
+    title: '', description: '', price: '', image: '', category: '', features: ''
   });
 
   // Category Form State
@@ -48,6 +48,34 @@ export default function Admin() {
       setOrders(data);
     } catch (error) {
        console.error("Failed to fetch orders", error);
+    }
+  };
+
+  const handleUpdateOrderStatus = async (id: string, status: string) => {
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    try {
+      const res = await fetch(`${baseUrl}/api/orders/${id}/status`, {
+        method: 'PUT',
+        headers: adminHeaders,
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) fetchOrders();
+    } catch (error) {
+       console.error("Failed to update order", error);
+    }
+  };
+
+  const handleDeleteOrder = async (id: string) => {
+    if (!confirm("Haqiqatan ham ushbu buyurtmani o'chirmoqchimisiz?")) return;
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    try {
+      const res = await fetch(`${baseUrl}/api/orders/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-id': adminId }
+      });
+      if (res.ok) fetchOrders();
+    } catch (error) {
+       console.error("Failed to delete order", error);
     }
   };
 
@@ -98,7 +126,8 @@ export default function Admin() {
          headers: adminHeaders,
          body: JSON.stringify({
            ...formData,
-           price: parseFloat(formData.price)
+           price: parseFloat(formData.price),
+           features: formData.features.split('\n').map(f => f.trim()).filter(f => f.length > 0)
          })
        });
        if (!res.ok) {
@@ -107,7 +136,7 @@ export default function Admin() {
            return;
        }
        setIsDialogOpen(false);
-       setFormData({ title: '', description: '', price: '', image: '', category: '' });
+       setFormData({ title: '', description: '', price: '', image: '', category: '', features: '' });
        setEditingProduct(null);
        fetchProducts();
     } catch (error) {
@@ -141,7 +170,8 @@ export default function Admin() {
        description: p.description,
        price: p.price.toString(),
        image: p.image,
-       category: p.category
+       category: p.category,
+       features: p.features ? p.features.join('\n') : ''
     });
     setIsDialogOpen(true);
   };
@@ -170,7 +200,7 @@ export default function Admin() {
             <h2 className="text-lg font-semibold">Barcha Mahsulotlar</h2>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={() => { setEditingProduct(null); setFormData({ title: '', description: '', price: '', image: '', category: '' }); }} className="bg-brand text-white shadow-sm flex items-center gap-2">
+                <Button onClick={() => { setEditingProduct(null); setFormData({ title: '', description: '', price: '', image: '', category: '', features: '' }); }} className="bg-brand text-white shadow-sm flex items-center gap-2">
                   <Plus size={16} /> Qo'shish
                 </Button>
               </DialogTrigger>
@@ -200,6 +230,15 @@ export default function Admin() {
                   <div className="space-y-1">
                     <Label>Batafsil ma'lumot</Label>
                     <Input value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="..." />
+                  </div>
+                  <div className="space-y-1">
+                    <Label>Xususiyatlar (har birini yangi qatorga yozing)</Label>
+                    <textarea 
+                      className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      value={formData.features} 
+                      onChange={e => setFormData({...formData, features: e.target.value})} 
+                      placeholder="256 GB Xotira&#10;8 GB RAM&#10;Amoled Ekran"
+                    />
                   </div>
                   <Button onClick={handleSaveProduct} className="w-full bg-brand text-white mt-4">Saqlash</Button>
                 </div>
@@ -296,8 +335,22 @@ export default function Admin() {
                      </div>
                    ))}
                  </div>
-                 <div className="mt-3 text-xs flex justify-between items-center font-medium">
-                   Holati: <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full">{order.status}</span>
+                 <div className="mt-3 flex justify-between items-center text-xs font-medium border-t border-tg-hint/10 pt-3">
+                   <div className="flex gap-2">
+                     <span className={`px-2 py-1 rounded-full ${order.status === 'accepted' || order.status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                       {order.status === 'pending' ? 'Kutilmoqda' : order.status}
+                     </span>
+                   </div>
+                   <div className="flex gap-2">
+                     {order.status === 'pending' && (
+                       <Button size="sm" onClick={() => handleUpdateOrderStatus(order._id, 'accepted')} className="h-7 text-xs bg-green-500 hover:bg-green-600 text-white">
+                         Qabul qilish
+                       </Button>
+                     )}
+                     <Button size="sm" variant="ghost" onClick={() => handleDeleteOrder(order._id)} className="h-7 text-xs text-red-500 hover:bg-red-500/10">
+                       Bekor qilish
+                     </Button>
+                   </div>
                  </div>
                </div>
              ))}
