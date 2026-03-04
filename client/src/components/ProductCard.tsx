@@ -23,14 +23,14 @@ export default function ProductCard({ product }: { product: Product }) {
           <Badge variant="secondary" className="w-fit mb-2 text-[10px] text-tg-hint uppercase font-bold tracking-wider">{product.category}</Badge>
           <h3 className="font-semibold text-tg-text text-sm leading-tight mb-2 line-clamp-2">{product.title}</h3>
         </CardContent>
-        <CardFooter className="p-3 pt-0 flex items-center justify-between mt-auto">
-          <span className="font-bold text-tg-text text-md">${product.price.toFixed(2)}</span>
+        <CardFooter className="p-3 pt-0 flex flex-col items-start gap-2.5 mt-auto">
+          <span className="font-extrabold text-tg-text text-lg tracking-tight">${product.price.toFixed(2)}</span>
           <Button 
             onClick={handleAdd}
             size="sm"
-            className="bg-tg-button text-tg-buttonText hover:opacity-90 rounded-full font-bold shadow-sm h-8 px-4"
+            className="w-full bg-brand text-white hover:bg-brand/90 font-bold shadow-sm h-9 rounded-xl"
           >
-            Add
+            Savatga
           </Button>
         </CardFooter>
       </Card>

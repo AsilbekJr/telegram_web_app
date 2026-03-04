@@ -5,6 +5,7 @@ import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import { useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
+import Admin from './pages/Admin';
 
 function App() {
   useEffect(() => {
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" element={<Catalog />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </main>
       </div>

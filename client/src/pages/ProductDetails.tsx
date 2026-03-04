@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockProducts } from '../data/mockProducts';
+import { useProductsStore } from '../store/useProductsStore';
 import { useCartStore } from '../store/useCartStore';
 import { useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
@@ -10,7 +10,8 @@ import { Badge } from '@/components/ui/badge';
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const product = mockProducts.find(p => p.id === id);
+  const products = useProductsStore(state => state.products);
+  const product = products.find(p => p.id === id);
   const addItem = useCartStore(state => state.addItem);
 
   useEffect(() => {
@@ -25,7 +26,12 @@ export default function ProductDetails() {
   }, [navigate]);
 
   if (!product) {
-    return <div className="p-4 text-center">Product not found</div>;
+    return (
+        <div className="p-8 text-center flex flex-col items-center justify-center min-h-screen bg-tg-bg">
+            <h2 className="text-xl font-bold text-tg-text mb-4">Mahsulot topilmadi</h2>
+            <Button onClick={() => navigate(-1)} className="bg-brand text-white rounded-xl">Orqaga qaytish</Button>
+        </div>
+    );
   }
 
   return (
@@ -58,9 +64,9 @@ export default function ProductDetails() {
                 addItem(product);
                 if (WebApp.HapticFeedback) WebApp.HapticFeedback.impactOccurred('light');
             }}
-            className="w-full bg-tg-button text-tg-buttonText font-bold text-lg py-6 rounded-xl shadow-md hover:opacity-90 transition-opacity"
+            className="w-full bg-brand text-white font-bold text-lg py-6 rounded-xl shadow-md hover:bg-brand/90 transition-opacity"
             >
-            Add to Cart
+            Savatga qo'shish
             </Button>
         </div>
       </div>

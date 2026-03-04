@@ -12,6 +12,11 @@
   --color-tg-button: var(--tg-theme-button-color, #2481cc);
   --color-tg-buttonText: var(--tg-theme-button-text-color, #ffffff);
   --color-tg-secondaryBg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+  
+  --color-brand: #d23211;
+  --color-brand-foreground: #ffffff;
+  --color-brand-blue: #062c64;
+  --color-brand-blue-foreground: #ffffff;
 }
 
 @layer base {

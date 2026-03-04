@@ -18,7 +18,8 @@ export default function Cart() {
     if (items.length > 0) {
       WebApp.MainButton.show();
       WebApp.MainButton.setParams({
-        text: `PAY $${total.toFixed(2)}`,
+        text: `SOTIB OLISH - $${total.toFixed(2)}`,
+        color: '#e30b13',
         is_visible: true
       });
       
@@ -80,9 +81,9 @@ export default function Cart() {
         <p className="text-tg-hint mb-8 text-sm">Looks like you haven't added any items yet.</p>
         <Button 
           onClick={() => navigate('/')}
-          className="bg-tg-button text-tg-buttonText font-bold py-6 px-8 rounded-xl shadow-sm hover:opacity-90"
+          className="bg-brand text-white font-bold py-6 px-8 rounded-xl shadow-md hover:bg-brand/90"
         >
-          Start Shopping
+          Xaridni Boshlash
         </Button>
       </div>
     );
