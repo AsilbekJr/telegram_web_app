@@ -240,7 +240,7 @@ function validateInitData(initData, botToken) {
 
 // Create Invoice/Checkout endpoint
 app.post('/api/checkout', async (req, res) => {
-    const { items, totalAmount, userId, initData } = req.body;
+    const { items, totalAmount, userId, initData, phoneNumber } = req.body;
     
     try {
         console.log("Received checkout request:", { userId, totalAmount, itemsCount: items?.length });
@@ -265,6 +265,7 @@ app.post('/api/checkout', async (req, res) => {
         // Save the Order to MongoDB
         const newOrder = new Order({
             telegramUserId: String(userId),
+            phoneNumber: String(phoneNumber),
             items: items.map(i => ({ productId: i.id, quantity: i.quantity, price: i.price })),
             totalAmount: totalAmount,
             status: 'pending',

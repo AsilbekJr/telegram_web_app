@@ -281,7 +281,10 @@ export default function Admin() {
              {orders.map(order => (
                <div key={order._id} className="p-4 bg-tg-secondaryBg rounded-xl border border-tg-hint/10 text-sm">
                  <div className="flex justify-between mb-2">
-                   <span className="font-bold">Mijoz ID: {order.telegramUserId}</span>
+                   <div className="flex flex-col">
+                     <span className="font-bold">Mijoz ID: {order.telegramUserId}</span>
+                     {order.phoneNumber && <span className="text-brand font-medium">📞 {order.phoneNumber}</span>}
+                   </div>
                    <span className="text-tg-hint">#{order._id.slice(-6)}</span>
                  </div>
                  <div className="text-brand font-bold mb-2">Umumiy Summa: ${order.totalAmount.toFixed(2)}</div>

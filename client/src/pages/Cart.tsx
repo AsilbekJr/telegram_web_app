@@ -1,17 +1,19 @@
 import { useCartStore } from '../store/useCartStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk';
-import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowLeft, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function Cart() {
   const { items, removeItem, decreaseQuantity, addItem, totalPrice } = useCartStore();
   const navigate = useNavigate();
   const total = totalPrice();
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   useEffect(() => {
-    WebApp.BackButton.show();
     const handleBack = () => navigate(-1);
     WebApp.BackButton.onClick(handleBack);
 
@@ -24,6 +26,11 @@ export default function Cart() {
       });
       
       const handleCheckout = async () => {
+        if (!phoneNumber || phoneNumber.length < 9) {
+            WebApp.showAlert("Iltimos, aloqa uchun telefon raqamingizni kiriting!");
+            return;
+        }
+
         try {
           WebApp.MainButton.showProgress();
           const response = await fetch('/api/checkout', {
@@ -36,7 +43,8 @@ export default function Cart() {
               totalAmount: total,
               initData: WebApp.initData,
               queryId: WebApp.initDataUnsafe?.query_id,
-              userId: WebApp.initDataUnsafe?.user?.id
+              userId: WebApp.initDataUnsafe?.user?.id,
+              phoneNumber: phoneNumber
             })
           });
 
@@ -69,7 +77,7 @@ export default function Cart() {
         WebApp.BackButton.offClick(handleBack);
       };
     }
-  }, [items, total, navigate]);
+  }, [items, total, navigate, phoneNumber]);
 
   if (items.length === 0) {
     return (
@@ -145,7 +153,27 @@ export default function Cart() {
         ))}
       </div>
 
-      <div className="mt-8 bg-tg-secondaryBg rounded-2xl p-4 border border-tg-hint/10">
+      <div className="mt-6 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+        <h3 className="font-semibold text-gray-900 mb-3 text-sm">Aloqa ma'lumotlari</h3>
+        <div className="space-y-2">
+          <Label htmlFor="phone" className="text-xs text-gray-500 ml-1">Telefon raqam *</Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Phone className="h-4 w-4 text-gray-400" />
+            </div>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="+998 90 123 45 67"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="pl-9 h-11 bg-gray-50 border-gray-200 focus:bg-white focus:border-brand rounded-xl transition-all"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 bg-tg-secondaryBg rounded-2xl p-4 border border-tg-hint/10">
         <div className="flex justify-between items-center mb-3">
           <span className="text-tg-hint font-medium text-sm">Subtotal</span>
           <span className="text-tg-text font-bold">${total.toFixed(2)}</span>
