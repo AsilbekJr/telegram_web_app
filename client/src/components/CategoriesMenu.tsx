@@ -15,9 +15,9 @@ export default function CategoriesMenu() {
   if (isLoading) {
     return (
       <div className="py-6">
-        <h2 className="text-xl font-bold text-tg-text mb-4 px-4 font-display">Ommabop kategoriyalar</h2>
-        <div className="flex px-4 space-x-3 overflow-hidden">
-           {[1,2,3].map(i => <div key={i} className="min-w-[160px] h-20 rounded-2xl bg-tg-hint/10 animate-pulse"></div>)}
+        <h2 className="text-xl font-bold text-gray-900 mb-4 px-5 tracking-tight font-sans">Ommabop kategoriyalar</h2>
+        <div className="flex px-5 space-x-4 overflow-hidden">
+           {[1,2,3].map(i => <div key={i} className="min-w-[160px] h-20 rounded-2xl bg-gray-100 animate-pulse"></div>)}
         </div>
       </div>
     );
@@ -26,23 +26,23 @@ export default function CategoriesMenu() {
   if (categories.length === 0) return null;
 
   return (
-    <div className="py-6 bg-white/5">
-      <div className="flex items-center justify-between px-4 mb-4">
-        <h2 className="text-xl font-bold text-tg-text font-display">Ommabop kategoriyalar</h2>
+    <div className="py-6 bg-gradient-to-b from-gray-50/50 to-transparent">
+      <div className="flex items-center justify-between px-5 mb-4">
+        <h2 className="text-xl font-bold text-gray-900 tracking-tight font-sans">Ommabop kategoriyalar</h2>
       </div>
       
       <ScrollArea className="w-full whitespace-nowrap outline-none">
-        <div className="flex w-max space-x-3 px-4 pb-4">
+        <div className="flex w-max space-x-4 px-5 pb-5">
           {categories.map((category) => {
             const isActive = activeCategory === category.name;
             return (
             <div 
               key={category.id} 
               onClick={() => setActiveCategory(isActive ? null : category.name)}
-              className={`flex items-center justify-between w-[180px] h-24 p-4 rounded-2xl ${isActive ? 'bg-[#E5E7EB] border-brand shadow-md' : 'bg-[#F3F4F6] border-transparent'} cursor-pointer group hover:bg-[#E5E7EB] transition-all duration-300 shadow-sm border hover:border-brand/10`}
+              className={`flex items-center justify-between w-[180px] h-24 p-4 rounded-2xl cursor-pointer group transition-all duration-300 border ${isActive ? 'bg-brand/5 border-brand/30 shadow-md ring-1 ring-brand/20' : 'bg-white border-gray-100 hover:border-brand/20 hover:shadow-md hover:bg-gray-50'}`}
             >
               <div className="flex flex-col justify-center flex-1 pr-2">
-                <span className={`text-sm font-bold leading-tight line-clamp-2 ${isActive ? 'text-brand' : 'text-[#1d212a]'}`}>
+                <span className={`text-sm font-bold leading-tight line-clamp-2 transition-colors duration-300 ${isActive ? 'text-brand' : 'text-gray-800 group-hover:text-brand'}`}>
                   {category.name}
                 </span>
                 {/* Fallback to icon if no image yet */}

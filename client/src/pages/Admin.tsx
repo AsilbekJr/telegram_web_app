@@ -10,9 +10,15 @@ import { Trash2, Edit2, Plus, ArrowLeft } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '../types';
+import WebApp from '@twa-dev/sdk';
 
 export default function Admin() {
   const navigate = useNavigate();
+  const adminId = WebApp.initDataUnsafe?.user?.id?.toString() || '';
+  const adminHeaders = { 
+    'Content-Type': 'application/json',
+    'x-admin-id': adminId
+  };
   const { products, fetchProducts, error: productsError } = useProductsStore();
   const { categories, fetchCategories, error: categoriesError } = useCategoriesStore();
   const [orders, setOrders] = useState<any[]>([]);
@@ -37,7 +43,7 @@ export default function Admin() {
   const fetchOrders = async () => {
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      const res = await fetch(`${baseUrl}/api/orders`);
+      const res = await fetch(`${baseUrl}/api/orders`, { headers: { 'x-admin-id': adminId } });
       const data = await res.json();
       setOrders(data);
     } catch (error) {
@@ -50,7 +56,7 @@ export default function Admin() {
     try {
        await fetch(`${baseUrl}/api/categories`, {
          method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
+         headers: adminHeaders,
          body: JSON.stringify(categoryFormData)
        });
        setIsCategoryDialogOpen(false);
@@ -65,7 +71,15 @@ export default function Admin() {
     if (!confirm("Haqiqatan ham ushbu kategoriyani o'chirmoqchimisiz?")) return;
     const baseUrl = import.meta.env.VITE_API_URL || '';
     try {
-      await fetch(`${baseUrl}/api/categories/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${baseUrl}/api/categories/${id}`, { 
+          method: 'DELETE',
+          headers: { 'x-admin-id': adminId }
+      });
+      if (!res.ok) {
+          const errMsg = await res.text();
+          alert(`O'chirishda xatolik yuz berdi: ${errMsg}`);
+          return;
+      }
       fetchCategories();
     } catch (error) {
       console.error("Delete category error", error);
@@ -81,7 +95,7 @@ export default function Admin() {
     try {
        const res = await fetch(url, {
          method,
-         headers: { 'Content-Type': 'application/json' },
+         headers: adminHeaders,
          body: JSON.stringify({
            ...formData,
            price: parseFloat(formData.price)
@@ -105,7 +119,15 @@ export default function Admin() {
     if (!confirm("Haqiqatan ham ushbu mahsulotni o'chirmoqchimisiz?")) return;
     const baseUrl = import.meta.env.VITE_API_URL || '';
     try {
-      await fetch(`${baseUrl}/api/products/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${baseUrl}/api/products/${id}`, { 
+          method: 'DELETE',
+          headers: { 'x-admin-id': adminId }
+      });
+      if (!res.ok) {
+          const errMsg = await res.text();
+          alert(`O'chirishda xatolik yuz berdi: ${errMsg}`);
+          return;
+      }
       fetchProducts();
     } catch (error) {
       console.error("Delete product error", error);

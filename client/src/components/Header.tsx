@@ -17,9 +17,9 @@ export default function Header() {
   }, [localSearch, setSearchQuery]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-tg-hint/10 shadow-sm flex flex-col">
-      <div className="px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-black tracking-tight flex items-center">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm flex flex-col transition-all duration-300">
+      <div className="px-5 py-4 flex items-center justify-between">
+        <Link to="/" className="text-2xl font-black tracking-tight flex items-center gap-1 hover:opacity-80 transition-opacity">
           <span className="text-brand">MEDIA</span>
           <span className="text-brand-blue">PARK</span>
         </Link>
@@ -35,18 +35,18 @@ export default function Header() {
         </div>
       </div>
       
-      {/* Search Bar - Typical for Mediapark and E-commerce */}
-      <div className="px-4 pb-3">
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-tg-hint" />
+      {/* Search Bar - Sleek and Modern */}
+      <div className="px-5 pb-4">
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-transform group-focus-within:scale-110">
+            <Search className="h-5 w-5 text-gray-400 group-focus-within:text-brand transition-colors" />
           </div>
           <input
             type="text"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-tg-hint/20 rounded-xl leading-5 bg-tg-secondaryBg placeholder-tg-hint focus:outline-none focus:bg-white focus:ring-1 focus:ring-brand focus:border-brand sm:text-sm transition-colors text-tg-text"
-            placeholder="Mahsulotlarni qidirish..."
+            className="block w-full pl-11 pr-4 py-3 border border-gray-200 rounded-full leading-5 bg-gray-50/50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand/20 focus:border-brand sm:text-sm transition-all duration-300 shadow-inner text-gray-900"
+            placeholder="Qanday mahsulot izlayapsiz?"
           />
         </div>
       </div>

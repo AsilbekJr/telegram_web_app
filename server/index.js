@@ -89,6 +89,26 @@ async function seedDatabase() {
   }
 }
 
+// Admin Auth Middleware
+const adminAuth = (req, res, next) => {
+    const adminId = req.headers['x-admin-id'];
+    const envAdmins = process.env.ADMIN_TELEGRAM_IDS;
+    
+    // If no admins are set in .env, we warn but allow for easy test/initial setup. 
+    // In production, the user MUST set ADMIN_TELEGRAM_IDS to secure it.
+    if (!envAdmins) {
+        console.warn("WARNING: ADMIN_TELEGRAM_IDS is not set in .env! Admin routes are accessible by anyone.");
+        return next();
+    }
+    
+    const allowedAdmins = envAdmins.split(',').map(id => id.trim());
+    if (adminId && allowedAdmins.includes(adminId)) {
+        return next();
+    }
+    
+    return res.status(403).json({ error: 'Unauthorized: Admin access required' });
+};
+
 // REST API endpoint to get products from MongoDB
 app.get('/api/products', async (req, res) => {
     try {
@@ -120,7 +140,7 @@ app.get('/api/products', async (req, res) => {
 });
 
 // Admin API: Create a product
-app.post('/api/products', async (req, res) => {
+app.post('/api/products', adminAuth, async (req, res) => {
     try {
         const newProduct = new Product(req.body);
         const saved = await newProduct.save();
@@ -131,7 +151,7 @@ app.post('/api/products', async (req, res) => {
 });
 
 // Admin API: Update a product
-app.put('/api/products/:id', async (req, res) => {
+app.put('/api/products/:id', adminAuth, async (req, res) => {
     try {
         const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updated) return res.status(404).json({ error: 'Product not found' });
@@ -142,7 +162,7 @@ app.put('/api/products/:id', async (req, res) => {
 });
 
 // Admin API: Delete a product
-app.delete('/api/products/:id', async (req, res) => {
+app.delete('/api/products/:id', adminAuth, async (req, res) => {
     try {
         const deleted = await Product.findByIdAndDelete(req.params.id);
         if (!deleted) return res.status(404).json({ error: 'Product not found' });
@@ -153,7 +173,7 @@ app.delete('/api/products/:id', async (req, res) => {
 });
 
 // Admin API: Get all orders
-app.get('/api/orders', async (req, res) => {
+app.get('/api/orders', adminAuth, async (req, res) => {
     try {
         const orders = await Order.find().sort({ createdAt: -1 }).populate('items.productId');
         res.json(orders);
@@ -177,7 +197,7 @@ app.get('/api/categories', async (req, res) => {
     }
 });
 
-app.post('/api/categories', async (req, res) => {
+app.post('/api/categories', adminAuth, async (req, res) => {
     try {
         const newCategory = new Category(req.body);
         const saved = await newCategory.save();
@@ -187,7 +207,7 @@ app.post('/api/categories', async (req, res) => {
     }
 });
 
-app.delete('/api/categories/:id', async (req, res) => {
+app.delete('/api/categories/:id', adminAuth, async (req, res) => {
     try {
         const deleted = await Category.findByIdAndDelete(req.params.id);
         if (!deleted) return res.status(404).json({ error: 'Category not found' });

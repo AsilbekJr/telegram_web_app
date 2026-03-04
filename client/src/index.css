@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
@@ -17,6 +18,22 @@
   --color-brand-foreground: #ffffff;
   --color-brand-blue: #062c64;
   --color-brand-blue-foreground: #ffffff;
+  
+  --font-sans: 'Outfit', sans-serif;
+}
+
+@utility glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@utility glass-dark {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 @layer base {
